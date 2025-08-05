@@ -1,0 +1,107 @@
+package util
+
+import (
+	"crypto/x509"
+	"encoding/base64"
+	"encoding/json"
+	"fmt"
+	"github.com/golang-jwt/jwt/v5"
+	"github.com/vancone/vancone-passport-sdk-go/pkg/config"
+	"github.com/vancone/vancone-passport-sdk-go/pkg/constant"
+	"github.com/vancone/vancone-passport-sdk-go/pkg/model"
+	"github.com/vancone/vancone-web-common-go/pkg/response"
+	"log"
+	"time"
+)
+
+var cachedToken string
+var prevCacheTime int64
+
+var publicKey interface{}
+
+func generateSignature(ak string, sk string) (timestamp string, signature string) {
+	body := map[string]string{
+		"accessKeyId":     ak,
+		"secretAccessKey": sk,
+	}
+	bodyStr, _ := json.Marshal(body)
+	respBytes := Request(config.SelfConfig.BaseUrl+constant.GenerateSignUrl, "POST", string(bodyStr), false)
+	resp := response.Response{}
+	json.Unmarshal(respBytes, &resp)
+	data := make(map[string]string)
+	dataBytes, _ := json.Marshal(resp.Data)
+	json.Unmarshal(dataBytes, &data)
+	return data["timestamp"], data["signature"]
+}
+
+func generateToken() string {
+	ak := config.SelfConfig.ServiceAccount.AccessKeyId
+	sk := config.SelfConfig.ServiceAccount.SecretAccessKey
+	timestamp, signature := generateSignature(ak, sk)
+	body := map[string]string{
+		"accessKeyId": ak,
+		"timestamp":   timestamp,
+		"signature":   signature,
+	}
+	bodyStr, _ := json.Marshal(body)
+	respBytes := Request(config.SelfConfig.BaseUrl+constant.GenerateTokenUrl, "POST", string(bodyStr), false)
+	resp := response.Response{}
+	err := json.Unmarshal(respBytes, &resp)
+	if err != nil {
+		return ""
+	}
+	return resp.Data.(string)
+}
+
+func GetToken() string {
+	currentTime := time.Now().Unix()
+	if cachedToken == "" || currentTime-prevCacheTime > 3600 {
+		cachedToken = generateToken()
+		prevCacheTime = currentTime
+	}
+	return cachedToken
+}
+
+func InitKeys() {
+	// Init public key
+	publicKeyBytes, _ := base64.StdEncoding.DecodeString(config.SelfConfig.Token.PublicKey)
+	var err error
+	publicKey, err = x509.ParsePKIXPublicKey(publicKeyBytes)
+	if err != nil {
+		log.Println("Failed to parse public key", err)
+	}
+}
+
+func ValidateToken(tokenStr string) bool {
+	if publicKey == nil {
+		InitKeys()
+	}
+	token, err := jwt.Parse(tokenStr, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodECDSA); !ok {
+			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+		}
+		return publicKey, nil
+	})
+	if err != nil {
+		log.Println("Failed to parse token", err)
+		return false
+	}
+	return token.Valid
+}
+
+func GetAccountInfo(tokenStr string) model.AccountInfo {
+	token, err := jwt.Parse(tokenStr, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodECDSA); !ok {
+			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+		}
+		return publicKey, nil
+	})
+	if err != nil {
+		log.Println("Failed to parse token", err)
+	}
+	accountMap := token.Claims.(jwt.MapClaims)
+	return model.AccountInfo{
+		TenantId: accountMap["tid"].(string),
+		UserId:   accountMap["uid"].(string),
+	}
+}
