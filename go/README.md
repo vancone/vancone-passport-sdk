@@ -1,1 +1,0 @@
-# vancone-passport-sdk-go
