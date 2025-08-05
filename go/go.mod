@@ -1,4 +1,4 @@
-module github.com/vancone/vancone-passport-sdk/go
+module github.com/vancone/vancone-passport-sdk
 
 go 1.21.3
 
