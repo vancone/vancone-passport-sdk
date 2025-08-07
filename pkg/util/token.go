@@ -5,13 +5,14 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"log"
+	"time"
+
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/vancone/vancone-passport-sdk-go/pkg/config"
 	"github.com/vancone/vancone-passport-sdk-go/pkg/constant"
 	"github.com/vancone/vancone-passport-sdk-go/pkg/model"
 	"github.com/vancone/vancone-web-common-go/pkg/response"
-	"log"
-	"time"
 )
 
 var cachedToken string

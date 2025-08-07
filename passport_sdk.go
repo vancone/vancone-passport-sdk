@@ -1,4 +1,4 @@
-package _go
+package passport_sdk
 
 import (
 	"github.com/spf13/viper"
