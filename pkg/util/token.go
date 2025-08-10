@@ -26,7 +26,7 @@ func generateSignature(ak string, sk string) (timestamp string, signature string
 		"secretAccessKey": sk,
 	}
 	bodyStr, _ := json.Marshal(body)
-	respBytes := Request(config.SelfConfig.BaseUrl+constant.GenerateSignUrl, "POST", string(bodyStr), false)
+	respBytes := Request(config.LocalConfig.BaseUrl+constant.GenerateSignUrl, "POST", string(bodyStr), false)
 	resp := response.Response{}
 	json.Unmarshal(respBytes, &resp)
 	data := make(map[string]string)
@@ -36,8 +36,8 @@ func generateSignature(ak string, sk string) (timestamp string, signature string
 }
 
 func generateToken() string {
-	ak := config.SelfConfig.ServiceAccount.AccessKeyId
-	sk := config.SelfConfig.ServiceAccount.SecretAccessKey
+	ak := config.LocalConfig.AppAccount.AccessKeyId
+	sk := config.LocalConfig.AppAccount.SecretAccessKey
 	timestamp, signature := generateSignature(ak, sk)
 	body := map[string]string{
 		"accessKeyId": ak,
@@ -45,7 +45,7 @@ func generateToken() string {
 		"signature":   signature,
 	}
 	bodyStr, _ := json.Marshal(body)
-	respBytes := Request(config.SelfConfig.BaseUrl+constant.GenerateTokenUrl, "POST", string(bodyStr), false)
+	respBytes := Request(config.LocalConfig.BaseUrl+constant.GenerateTokenUrl, "POST", string(bodyStr), false)
 	resp := response.Response{}
 	err := json.Unmarshal(respBytes, &resp)
 	if err != nil {
@@ -65,7 +65,7 @@ func GetToken() string {
 
 func InitKeys() {
 	// Init public key
-	publicKeyBytes, _ := base64.StdEncoding.DecodeString(config.SelfConfig.Token.PublicKey)
+	publicKeyBytes, _ := base64.StdEncoding.DecodeString(config.LocalConfig.Token.PublicKey)
 	var err error
 	publicKey, err = x509.ParsePKIXPublicKey(publicKeyBytes)
 	if err != nil {

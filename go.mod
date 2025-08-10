@@ -2,6 +2,8 @@ module github.com/vancone/vancone-passport-sdk-go
 
 go 1.21.3
 
+replace github.com/vancone/vancone-web-common-go => D:\Projects\vancone\vancone-web-common-go
+
 require (
 	github.com/golang-jwt/jwt/v5 v5.3.0
 	github.com/spf13/viper v1.20.1
