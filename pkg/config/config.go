@@ -42,4 +42,13 @@ func Init(viper *viper.Viper) {
 		log.Println("viper unmarshal err:", err)
 		return
 	}
+	if LocalConfig.BaseUrl == "" {
+		LocalConfig.BaseUrl = "https://passport.vancone.com"
+	}
+	if LocalConfig.Cache.SyncPeriodSeconds == 0 {
+		LocalConfig.Cache.SyncPeriodSeconds = 60
+	}
+	if LocalConfig.Token.Algorithm == "" {
+		LocalConfig.Token.Algorithm = "ES256"
+	}
 }

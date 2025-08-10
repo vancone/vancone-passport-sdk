@@ -27,7 +27,7 @@ func generateSignature(ak string, sk string) (timestamp string, signature string
 	}
 	bodyStr, _ := json.Marshal(body)
 	respBytes := Request(config.LocalConfig.BaseUrl+constant.GenerateSignUrl, "POST", string(bodyStr), false)
-	resp := response.Response{}
+	resp := response.Response[any]{}
 	json.Unmarshal(respBytes, &resp)
 	data := make(map[string]string)
 	dataBytes, _ := json.Marshal(resp.Data)
@@ -46,7 +46,7 @@ func generateToken() string {
 	}
 	bodyStr, _ := json.Marshal(body)
 	respBytes := Request(config.LocalConfig.BaseUrl+constant.GenerateTokenUrl, "POST", string(bodyStr), false)
-	resp := response.Response{}
+	resp := response.Response[any]{}
 	err := json.Unmarshal(respBytes, &resp)
 	if err != nil {
 		return ""
