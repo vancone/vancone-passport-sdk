@@ -102,7 +102,8 @@ func GetAccountInfo(tokenStr string) model.AccountInfo {
 	}
 	accountMap := token.Claims.(jwt.MapClaims)
 	return model.AccountInfo{
-		TenantId: accountMap["tid"].(string),
-		UserId:   accountMap["uid"].(string),
+		AccountId: accountMap[constant.TokenKeyAccountId].(string),
+		TenantId:  accountMap[constant.TokenKeyTenantId].(string),
+		UserId:    accountMap[constant.TokenKeyUserId].(string),
 	}
 }

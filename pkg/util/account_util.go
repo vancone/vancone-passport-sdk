@@ -1,0 +1,35 @@
+package util
+
+import (
+	"log"
+
+	"github.com/gin-gonic/gin"
+	"github.com/vancone/vancone-passport-sdk-go/pkg/constant"
+)
+
+func GetTenantId(ctx *gin.Context) string {
+	tenantId, exists := ctx.Get(constant.TokenKeyTenantId)
+	if !exists {
+		log.Println("TenantId not exists")
+		return ""
+	}
+	return tenantId.(string)
+}
+
+func GetAccountId(ctx *gin.Context) string {
+	accountId, exists := ctx.Get(constant.TokenKeyAccountId)
+	if !exists {
+		log.Println("AccountId not exists")
+		return ""
+	}
+	return accountId.(string)
+}
+
+func GetUserId(ctx *gin.Context) string {
+	userId, exists := ctx.Get(constant.TokenKeyUserId)
+	if !exists {
+		log.Println("UserId not exists")
+		return ""
+	}
+	return userId.(string)
+}
