@@ -12,7 +12,7 @@ import (
 	"github.com/vancone/vancone-passport-sdk-go/pkg/config"
 	"github.com/vancone/vancone-passport-sdk-go/pkg/constant"
 	"github.com/vancone/vancone-passport-sdk-go/pkg/model"
-	"github.com/vancone/vancone-web-common-go/pkg/response"
+	"github.com/vancone/vancone-web-common-go/pkg/server/response"
 )
 
 var cachedToken string

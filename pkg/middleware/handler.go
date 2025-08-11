@@ -1,4 +1,4 @@
-package handler
+package middleware
 
 import (
 	"log"
@@ -8,7 +8,7 @@ import (
 	"github.com/vancone/vancone-passport-sdk-go/pkg/util"
 )
 
-func TokenHandler(context *gin.Context) {
+func AuthMiddleware(context *gin.Context) {
 	token, err := context.Cookie("passport_token")
 	if err != nil {
 		log.Println("Failed to get token from cookie", err)
