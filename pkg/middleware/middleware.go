@@ -20,9 +20,10 @@ func AuthMiddleware(ctx *gin.Context) {
 	if !util.ValidateToken(token) {
 		ctx.AbortWithStatus(http.StatusUnauthorized)
 	} else {
-		accountInfo := util.GetAccountInfo(token)
+		accountInfo := util.ParseAccountInfo(token)
 		ctx.Set(constant.TokenKeyAccountId, accountInfo.AccountId)
 		ctx.Set(constant.TokenKeyTenantId, accountInfo.TenantId)
 		ctx.Set(constant.TokenKeyUserId, accountInfo.UserId)
+		ctx.Set(constant.AccountInfo, accountInfo)
 	}
 }

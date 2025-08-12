@@ -90,7 +90,7 @@ func ValidateToken(tokenStr string) bool {
 	return token.Valid
 }
 
-func GetAccountInfo(tokenStr string) model.AccountInfo {
+func ParseAccountInfo(tokenStr string) model.AccountInfo {
 	token, err := jwt.Parse(tokenStr, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodECDSA); !ok {
 			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])

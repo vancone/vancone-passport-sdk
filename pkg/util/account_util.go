@@ -5,7 +5,16 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/vancone/vancone-passport-sdk-go/pkg/constant"
+	"github.com/vancone/vancone-passport-sdk-go/pkg/model"
 )
+
+func GetAccountInfo(ctx *gin.Context) model.AccountInfo {
+	accountInfo, exists := ctx.Get(constant.AccountInfo)
+	if !exists {
+		log.Println("Account info not found")
+	}
+	return accountInfo.(model.AccountInfo)
+}
 
 func GetTenantId(ctx *gin.Context) string {
 	tenantId, exists := ctx.Get(constant.TokenKeyTenantId)

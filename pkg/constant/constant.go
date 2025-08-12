@@ -11,4 +11,5 @@ const (
 	TokenKeyAccountId = "acid"
 	TokenKeyTenantId  = "tid"
 	TokenKeyUserId    = "uid"
+	AccountInfo       = "accountInfo"
 )
