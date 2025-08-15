@@ -54,7 +54,7 @@ func generateToken() string {
 	return resp.Data.(string)
 }
 
-func GetToken() string {
+func getToken() string {
 	currentTime := time.Now().Unix()
 	if cachedToken == "" || currentTime-prevCacheTime > 3600 {
 		cachedToken = generateToken()

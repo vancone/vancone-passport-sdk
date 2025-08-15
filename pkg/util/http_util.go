@@ -17,7 +17,7 @@ func Request(uri string, method string, body string, auth bool) []byte {
 
 	request.Header.Add("Content-Type", "application/json")
 	if auth {
-		request.Header.Add("passport-token", GetToken())
+		request.Header.Add("passport-token", getToken())
 	}
 
 	response, err := client.Do(request)

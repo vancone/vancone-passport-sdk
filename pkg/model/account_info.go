@@ -1,8 +1,8 @@
 package model
 
 type AccountInfo struct {
-	TenantId     string
-	AccountId    string
-	UserId       string
-	PermissionId []string
+	TenantId      string   `json:"tenantId"`
+	AccountId     string   `json:"accountId"`
+	UserId        string   `json:"userId"`
+	PermissionIds []string `json:"permissionIds"`
 }
