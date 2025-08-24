@@ -10,24 +10,37 @@ var Viper *viper.Viper
 var LocalConfig PassportConfig
 
 type PassportConfig struct {
-	AccessControl AccessControlConfig `mapstructure:"access-control"`
-	AppAccount    AppAccountConfig    `mapstructure:"app-account"`
-	BaseUrl       string              `mapstructure:"base-url"`
-	Cache         CacheConfig         `mapstructure:"cache"`
-	Token         TokenConfig         `mapstructure:"token"`
+	AccessControl  AccessControlConfig  `mapstructure:"access-control"`
+	AppAccount     AppAccountConfig     `mapstructure:"app-account"`
+	Authentication AuthenticationConfig `mapstructure:"authentication"`
+	CsrfConfig     CsrfConfig           `mapstructure:"csrf"`
+	PlatformConfig PlatformConfig       `mapstructure:"platform"`
+	Token          TokenConfig          `mapstructure:"token"`
 }
 
 type AccessControlConfig struct {
-	Enabled bool `mapstructure:"enabled"`
+	Enabled      bool     `mapstructure:"enabled"`
+	UriAllowlist []string `mapstructure:"uri-allowlist"`
 }
 
 type AppAccountConfig struct {
-	AccessKeyId     string `mapstructure:"access-key-id"`
-	SecretAccessKey string `mapstructure:"secret-access-key"`
+	Ak string `mapstructure:"ak"`
+	Sk string `mapstructure:"sk"`
 }
 
-type CacheConfig struct {
-	SyncPeriodSeconds int `mapstructure:"sync-period-seconds"`
+type AuthenticationConfig struct {
+	Enabled      bool     `mapstructure:"enabled"`
+	UriAllowlist []string `mapstructure:"uri-allowlist"`
+}
+
+type CsrfConfig struct {
+	Enabled   bool   `mapstructure:"enabled"`
+	SecretKey string `mapstructure:"secret-key"`
+}
+
+type PlatformConfig struct {
+	BaseUrl          string `mapstructure:"base-url"`
+	CacheSyncSeconds int    `mapstructure:"cache-sync-seconds"`
 }
 
 type TokenConfig struct {
@@ -37,16 +50,26 @@ type TokenConfig struct {
 
 func Init(viper *viper.Viper) {
 	Viper = viper
+	accessControlEnabled := viper.Get("passport.access-control.enabled")
+	if accessControlEnabled == nil {
+		viper.Set("passport.access-control.enabled", true)
+	}
+	authenticationEnabled := viper.Get("passport.authentication.enabled")
+	if authenticationEnabled == nil {
+		viper.Set("passport.authentication.enabled", true)
+	}
+
 	err := viper.UnmarshalKey("passport", &LocalConfig)
 	if err != nil {
 		log.Println("viper unmarshal err:", err)
 		return
 	}
-	if LocalConfig.BaseUrl == "" {
-		LocalConfig.BaseUrl = "https://passport.vancone.com"
+	// Set default value
+	if LocalConfig.PlatformConfig.BaseUrl == "" {
+		LocalConfig.PlatformConfig.BaseUrl = "https://passport.vancone.com"
 	}
-	if LocalConfig.Cache.SyncPeriodSeconds == 0 {
-		LocalConfig.Cache.SyncPeriodSeconds = 60
+	if LocalConfig.PlatformConfig.CacheSyncSeconds == 0 {
+		LocalConfig.PlatformConfig.CacheSyncSeconds = 60
 	}
 	if LocalConfig.Token.Algorithm == "" {
 		LocalConfig.Token.Algorithm = "ES256"

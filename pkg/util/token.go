@@ -26,7 +26,7 @@ func generateSignature(ak string, sk string) (timestamp string, signature string
 		"secretAccessKey": sk,
 	}
 	bodyStr, _ := json.Marshal(body)
-	respBytes := Request(config.LocalConfig.BaseUrl+constant.GenerateSignUrl, "POST", string(bodyStr), false)
+	respBytes := Request(config.LocalConfig.PlatformConfig.BaseUrl+constant.GenerateSignUrl, "POST", string(bodyStr), false)
 	resp := response.Response[any]{}
 	json.Unmarshal(respBytes, &resp)
 	data := make(map[string]string)
@@ -36,8 +36,8 @@ func generateSignature(ak string, sk string) (timestamp string, signature string
 }
 
 func generateToken() string {
-	ak := config.LocalConfig.AppAccount.AccessKeyId
-	sk := config.LocalConfig.AppAccount.SecretAccessKey
+	ak := config.LocalConfig.AppAccount.Ak
+	sk := config.LocalConfig.AppAccount.Sk
 	timestamp, signature := generateSignature(ak, sk)
 	body := map[string]string{
 		"accessKeyId": ak,
@@ -45,7 +45,7 @@ func generateToken() string {
 		"signature":   signature,
 	}
 	bodyStr, _ := json.Marshal(body)
-	respBytes := Request(config.LocalConfig.BaseUrl+constant.GenerateTokenUrl, "POST", string(bodyStr), false)
+	respBytes := Request(config.LocalConfig.PlatformConfig.BaseUrl+constant.GenerateTokenUrl, "POST", string(bodyStr), false)
 	resp := response.Response[any]{}
 	err := json.Unmarshal(respBytes, &resp)
 	if err != nil {
