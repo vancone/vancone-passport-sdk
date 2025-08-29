@@ -38,6 +38,10 @@ func generateSignature(ak string, sk string) (timestamp string, signature string
 func generateToken() string {
 	ak := config.LocalConfig.AppAccount.Ak
 	sk := config.LocalConfig.AppAccount.Sk
+	if ak == "" || sk == "" {
+		log.Println("App account ak / sk can't be empty")
+		return ""
+	}
 	timestamp, signature := generateSignature(ak, sk)
 	body := map[string]string{
 		"accessKeyId": ak,
@@ -54,7 +58,7 @@ func generateToken() string {
 	return resp.Data.(string)
 }
 
-func getToken() string {
+func ApplyToken() string {
 	currentTime := time.Now().Unix()
 	if cachedToken == "" || currentTime-prevCacheTime > 3600 {
 		cachedToken = generateToken()
