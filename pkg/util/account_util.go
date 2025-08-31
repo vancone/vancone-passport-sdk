@@ -8,12 +8,14 @@ import (
 	"github.com/vancone/vancone-passport-sdk-go/pkg/model"
 )
 
-func GetAccountInfo(ctx *gin.Context) model.AccountInfo {
+func GetAccountInfo(ctx *gin.Context) *model.AccountInfo {
 	accountInfo, exists := ctx.Get(constant.AccountInfo)
 	if !exists {
 		log.Println("Account info not found")
+		return nil
 	}
-	return accountInfo.(model.AccountInfo)
+	accountInfoReturnValue := accountInfo.(model.AccountInfo)
+	return &accountInfoReturnValue
 }
 
 func GetTenantId(ctx *gin.Context) string {
