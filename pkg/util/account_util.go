@@ -1,17 +1,16 @@
 package util
 
 import (
-	"log"
-
 	"github.com/gin-gonic/gin"
 	"github.com/vancone/vancone-passport-sdk-go/pkg/constant"
 	"github.com/vancone/vancone-passport-sdk-go/pkg/model"
+	"github.com/vancone/vancone-web-common-go/pkg/logger"
 )
 
 func GetAccountInfo(ctx *gin.Context) *model.AccountInfo {
 	accountInfo, exists := ctx.Get(constant.AccountInfo)
 	if !exists {
-		log.Println("Account info not found")
+		logger.Error("Account info not found")
 		return nil
 	}
 	accountInfoReturnValue := accountInfo.(model.AccountInfo)
@@ -21,7 +20,7 @@ func GetAccountInfo(ctx *gin.Context) *model.AccountInfo {
 func GetTenantId(ctx *gin.Context) string {
 	tenantId, exists := ctx.Get(constant.TokenKeyTenantId)
 	if !exists {
-		log.Println("TenantId not exists")
+		logger.Error("TenantId not exists")
 		return ""
 	}
 	return tenantId.(string)
@@ -30,7 +29,7 @@ func GetTenantId(ctx *gin.Context) string {
 func GetAccountId(ctx *gin.Context) string {
 	accountId, exists := ctx.Get(constant.TokenKeyAccountId)
 	if !exists {
-		log.Println("AccountId not exists")
+		logger.Error("AccountId not exists")
 		return ""
 	}
 	return accountId.(string)
@@ -39,7 +38,7 @@ func GetAccountId(ctx *gin.Context) string {
 func GetUserId(ctx *gin.Context) string {
 	userId, exists := ctx.Get(constant.TokenKeyUserId)
 	if !exists {
-		log.Println("UserId not exists")
+		logger.Error("UserId not exists")
 		return ""
 	}
 	return userId.(string)
@@ -48,7 +47,7 @@ func GetUserId(ctx *gin.Context) string {
 func GetToken(ctx *gin.Context) string {
 	token, err := ctx.Cookie(constant.CookieKeyToken)
 	if err != nil {
-		log.Println("Failed to get token from cookie", err)
+		logger.Error("Failed to get token from cookie", err)
 	}
 	if token == "" {
 		token = ctx.GetHeader(constant.HeaderKeyToken)

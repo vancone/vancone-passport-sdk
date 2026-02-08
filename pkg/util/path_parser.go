@@ -151,7 +151,7 @@ func main() {
 
     for _, p := range patterns {
         if err := parser.AddPattern(p); err != nil {
-            log.Printf("Error adding pattern %s: %v", p, err)
+            logger.Errorf("Error adding pattern %s: %v", p, err)
         }
     }
 

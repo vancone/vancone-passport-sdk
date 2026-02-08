@@ -1,9 +1,8 @@
 package config
 
 import (
-	"log"
-
 	"github.com/spf13/viper"
+	"github.com/vancone/vancone-web-common-go/pkg/logger"
 )
 
 var Viper *viper.Viper
@@ -61,7 +60,7 @@ func Init(viper *viper.Viper) {
 
 	err := viper.UnmarshalKey("passport", &LocalConfig)
 	if err != nil {
-		log.Println("viper unmarshal err:", err)
+		logger.Error("viper unmarshal err:", err)
 		return
 	}
 	// Set default value

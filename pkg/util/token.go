@@ -5,13 +5,13 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
-	"log"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/vancone/vancone-passport-sdk-go/pkg/config"
 	"github.com/vancone/vancone-passport-sdk-go/pkg/constant"
 	"github.com/vancone/vancone-passport-sdk-go/pkg/model"
+	"github.com/vancone/vancone-web-common-go/pkg/logger"
 	"github.com/vancone/vancone-web-common-go/pkg/server/response"
 )
 
@@ -39,7 +39,7 @@ func generateToken() string {
 	ak := config.LocalConfig.AppAccount.Ak
 	sk := config.LocalConfig.AppAccount.Sk
 	if ak == "" || sk == "" {
-		log.Println("App account ak / sk can't be empty")
+		logger.Error("App account ak / sk can't be empty")
 		return ""
 	}
 	timestamp, signature := generateSignature(ak, sk)
@@ -68,12 +68,11 @@ func ApplyToken() string {
 }
 
 func InitKeys() {
-	// Init public key
 	publicKeyBytes, _ := base64.StdEncoding.DecodeString(config.LocalConfig.Token.PublicKey)
 	var err error
 	publicKey, err = x509.ParsePKIXPublicKey(publicKeyBytes)
 	if err != nil {
-		log.Println("Failed to parse public key", err)
+		logger.Error("Failed to parse public key", err)
 	}
 }
 
@@ -88,7 +87,7 @@ func ValidateToken(tokenStr string) bool {
 		return publicKey, nil
 	})
 	if err != nil {
-		log.Println("Failed to parse token", err)
+		logger.Error("Failed to parse token", err)
 		return false
 	}
 	return token.Valid
@@ -102,7 +101,7 @@ func ParseAccountInfo(tokenStr string) model.AccountInfo {
 		return publicKey, nil
 	})
 	if err != nil {
-		log.Println("Failed to parse token", err)
+		logger.Error("Failed to parse token", err)
 	}
 	accountMap := token.Claims.(jwt.MapClaims)
 	return model.AccountInfo{

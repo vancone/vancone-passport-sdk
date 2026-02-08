@@ -2,16 +2,17 @@ package util
 
 import (
 	"io/ioutil"
-	"log"
 	"net/http"
 	"strings"
+
+	"github.com/vancone/vancone-web-common-go/pkg/logger"
 )
 
 func Request(uri string, method string, body string, auth bool) []byte {
 	client := &http.Client{}
 	request, err := http.NewRequest(method, uri, strings.NewReader(body))
 	if err != nil {
-		log.Println(err.Error())
+		logger.Error(err.Error())
 		return nil
 	}
 
@@ -22,7 +23,7 @@ func Request(uri string, method string, body string, auth bool) []byte {
 
 	response, err := client.Do(request)
 	if err != nil {
-		log.Println(err.Error())
+		logger.Error(err.Error())
 		return nil
 	}
 	defer response.Body.Close()
