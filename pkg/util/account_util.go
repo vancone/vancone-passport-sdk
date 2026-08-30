@@ -45,12 +45,9 @@ func GetUserId(ctx *gin.Context) string {
 }
 
 func GetToken(ctx *gin.Context) string {
-	token, err := ctx.Cookie(constant.CookieKeyToken)
-	if err != nil {
-		logger.Error("Failed to get token from cookie", err)
-	}
+	token := ctx.GetHeader(constant.HeaderKeyToken)
 	if token == "" {
-		token = ctx.GetHeader(constant.HeaderKeyToken)
+		token, _ = ctx.Cookie(constant.CookieKeyToken)
 	}
 	return token
 }
